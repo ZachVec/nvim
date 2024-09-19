@@ -32,5 +32,9 @@ require("lazy").setup({
   install = { colorscheme = { "habamax" } },
   -- automatically check for plugin updates
   checker = { enabled = true },
+  dev = {
+      path = "~/Repositories",
+      patterns = {"*.nvim"},
+  }
 })
 
