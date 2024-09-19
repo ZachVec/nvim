@@ -12,7 +12,7 @@ local setup_opts = {
         }
     },
     pyright = {},
-    clangd = {},
+    -- clangd = {},
 }
 
 return {
