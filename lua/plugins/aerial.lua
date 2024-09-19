@@ -7,8 +7,6 @@ return {
     config = function ()
         require("aerial").setup({})
         local nnoremap = require("utils").nnoremap
-        nnoremap("<leader>tl", "<cmd>AerialToggle! right<CR>")
-        nnoremap("<leader>tr", "<cmd>AerialToggle! left<CR>")
-        nnoremap("<leader>tf", "<cmd>AerialToggle float<CR>")
+        nnoremap("<leader>tt", "<cmd>AerialToggle! right<CR>")
     end
 }

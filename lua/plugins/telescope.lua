@@ -30,38 +30,46 @@ return {
                     case_mode = "smart_case",
                 },
                 aerial = {
-                  -- How to format the symbols
-                  format_symbol = function(symbol_path, filetype)
-                    if filetype == "json" or filetype == "yaml" then
-                      return table.concat(symbol_path, ".")
-                    else
-                      return symbol_path[#symbol_path]
-                    end
-                  end,
-                  -- Available modes: symbols, lines, both
-                  show_columns = "both",
+                    -- How to format the symbols
+                    format_symbol = function(symbol_path, filetype)
+                        if filetype == "json" or filetype == "yaml" then
+                            return table.concat(symbol_path, ".")
+                        else
+                            return symbol_path[#symbol_path]
+                        end
+                    end,
+                    -- Available modes: symbols, lines, both
+                    show_columns = "both",
                 },
+                tabpicker = {
+                    mappings = {
+                        n = { ["dd"] = "close_tab" }
+                    }
+                }
             }
         }
         require('telescope').load_extension('fzf')
+        local builtin = require('telescope.builtin')
+
+        local aerial = require('telescope').load_extension('aerial')
+        local tabpicker = require("telescope").load_extension("tabpicker")
+        local function find_buffers () builtin.live_grep({grep_open_files = true}) end
 
         -- custom mappings 
-        local builtin = require('telescope.builtin')
         local nnoremap = require("utils").nnoremap
-        nnoremap("<leader>ff", builtin.find_files)  -- jump to file
-        -- nnoremap("<leader>fg", builtin.git_files)   -- jump to git file
-        nnoremap("<leader>fb", builtin.buffers)     -- jump to buffer
-        nnoremap("<leader>ft", builtin.tags)        -- jump to tag
-        nnoremap("<leader>tt", builtin.treesitter)  -- jump to tag
-        nnoremap("<leader>fr", builtin.registers)   -- jump to registers
-        nnoremap("<leader>sf", builtin.live_grep)   -- find string in file
-        nnoremap("<leader>sb", function() builtin.live_grep({grep_open_files = true}) end)  -- find string in buffer
-        nnoremap("<leader>hs", builtin.search_history)
-        nnoremap("<leader>hc", builtin.command_history)
-        nnoremap("<leader>cs", builtin.colorscheme)
+        nnoremap("<leader>ff", builtin.find_files)  -- find files
+        nnoremap("<leader>fb", builtin.buffers)     -- find buffers
+        nnoremap("<leader>ft", aerial.aerial)       -- find tags
 
-        -- require('telescope').load_extension('aerial')
-        -- nnoremap("<leader>tt", require("telescope").extensions.aerial.aerial)        -- jump to tag
+        nnoremap("<leader>gf", builtin.live_grep)   -- grep files
+        nnoremap("<leader>gb", find_buffers)        -- grep buffers
+        nnoremap("<leader>gt", builtin.tags)        -- grep tags (by CTAG)
+
+        nnoremap("<leader>hs", builtin.search_history)   -- history of search
+        nnoremap("<leader>hc", builtin.command_history)  -- history of command
+        nnoremap("<leader>lt", tabpicker.find_tabpages)  -- list tabs
+        nnoremap("<leader>lr", builtin.registers)        -- list registers
+        nnoremap("<leader>lc", builtin.colorscheme)      -- list colorscheme
     end
 }
 

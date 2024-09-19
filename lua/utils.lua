@@ -1,18 +1,16 @@
---- @type fun(mode: string, opts: vim.keymap.set.Opts): fun(keys: string, cmd: function | string, updated: nil | vim.keymap.set.Opts)
+--- Create a key mapper
+---@param mode string | string[]
+---@param opts vim.keymap.set.Opts
+---@return fun(keys: string, cmd: string|function, new_opts: vim.keymap.set.Opts|nil)
 local function make_key_mapper(mode, opts)
-    local keyset = vim.keymap.set
-    opts = vim.deepcopy(opts)
-
-    --- @type fun(keys: string, cmd: function | string, updated: nil | vim.keymap.set.Opts)
-    local key_mapper = function(keys, cmd, updated)
-        if updated == nil then
-            return keyset(mode, keys, cmd, opts)
-        end
-        local final_opts = vim.deepcopy(opts)
-        for k, v in pairs(updated) do
-            final_opts[k] = v
-        end
-        return keyset(mode, keys, cmd, final_opts)
+    --- map keys to cmd
+    --- @param keys string
+    --- @param cmd string|function
+    --- @param new_opts vim.keymap.set.Opts|nil
+    --- @return nil
+    local key_mapper = function(keys, cmd, new_opts)
+        local final_ops = vim.tbl_deep_extend("force", opts, new_opts or {})
+        return vim.keymap.set(mode, keys, cmd, final_ops)
     end
     return key_mapper
 end

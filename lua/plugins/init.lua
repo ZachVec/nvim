@@ -28,7 +28,7 @@ return {
     { "aserowy/tmux.nvim", opts = opts.tmux, lazy = cond.not_in_tmux()},
 
     -- tabline
-    { "akinsho/bufferline.nvim", opts = opts.bufferline, version = "*", dependencies = 'nvim-tree/nvim-web-devicons' },
+    -- { "akinsho/bufferline.nvim", opts = opts.bufferline, version = "*", dependencies = 'nvim-tree/nvim-web-devicons' },
 
     -- block & line comments
     { "numToStr/Comment.nvim", opts = opts.Comment },
@@ -38,6 +38,9 @@ return {
 
     -- LSP server installer
     { "williamboman/mason-lspconfig.nvim", opts = opts.mason_lspconfig },
+
+    -- tabpicker
+    { "ZachVec/tabpicker.nvim", opts = opts.tabpicker},
 
     -- tabline & winbar & statusline
     require("plugins.lualine"),

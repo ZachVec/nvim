@@ -46,7 +46,8 @@ local comp = {
             return clients[1].name
         end,
         icon = ' LSP:',
-    }
+    },
+    tabs = "tabs",
 }
 
 local opts = {
@@ -55,20 +56,20 @@ local opts = {
         component_separators = "",
     },
     sections = {
-        lualine_a = {comp.mode},
-        lualine_b = {comp.branch, comp.diff},
-        lualine_c = {comp.section, comp.lsp_server},
-        lualine_x = {},
-        lualine_y = {comp.diagnostics, comp.encoding, comp.filetype},
-        lualine_z = {comp.progress, comp.location},
+        lualine_a = {},  -- {comp.mode},
+        lualine_b = {},  -- {comp.branch, comp.diff},
+        lualine_c = {},  -- {comp.section, comp.lsp_server},
+        lualine_x = {comp.lsp_server, comp.diagnostics},  -- {},
+        lualine_y = {comp.encoding, comp.filetype},  -- {comp.diagnostics, comp.encoding, comp.filetype},
+        lualine_z = {comp.progress, comp.location},  -- {comp.progress, comp.location},
     },
     inactive_sections = {
-        lualine_a = {comp.mode},
-        lualine_b = {comp.branch, comp.diff},
-        lualine_c = {comp.section, comp.lsp_server},
-        lualine_x = {},
-        lualine_y = {comp.diagnostics, comp.encoding, comp.filetype},
-        lualine_z = {comp.progress, comp.location},
+        lualine_a = {},  -- {comp.mode},
+        lualine_b = {},  -- {comp.branch, comp.diff},
+        lualine_c = {},  -- {comp.section, comp.lsp_server},
+        lualine_x = {comp.lsp_server, comp.diagnostics},  -- {},
+        lualine_y = {comp.encoding, comp.filetype},  -- {comp.diagnostics, comp.encoding, comp.filetype},
+        lualine_z = {comp.progress, comp.location},  -- {comp.progress, comp.location},
     },
     winbar = {
         lualine_a = {comp.filepath},
@@ -86,14 +87,14 @@ local opts = {
         lualine_y = {},
         lualine_z = {},
     },
-    -- tabline = {
-    --     lualine_a = {},
-    --     lualine_b = {},
-    --     lualine_c = {},
-    --     lualine_x = {},
-    --     lualine_y = {},
-    --     lualine_z = {},
-    -- },
+    tabline = {
+        lualine_a = {comp.tabs},
+        lualine_b = {comp.branch, comp.diff},
+        lualine_c = {},
+        lualine_x = {},
+        lualine_y = {},
+        lualine_z = {},
+    },
     extensions = { "aerial", "lazy", "mason", "nvim-tree" },
 }
 
