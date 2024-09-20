@@ -33,8 +33,7 @@ require("lazy").setup({
   -- automatically check for plugin updates
   checker = { enabled = true },
   dev = {
-      path = "~/Repositories",
-      patterns = {"*.nvim"},
-  }
+    path = "~/Repositories",
+    patterns = { "*.nvim" },
+  },
 })
-
