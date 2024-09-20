@@ -17,7 +17,6 @@ return {
     { "ellisonleao/gruvbox.nvim", opts = opts.gruvbox, lazy = false, priority = 1000 },
     { "folke/tokyonight.nvim", opts = opts.tokyonight, lazy = false, priority = 1000 },
     { "j-hui/fidget.nvim", opts = opts.fidget },
-    { "lewis6991/gitsigns.nvim", opts = opts.gitsigns},
     { "lukas-reineke/indent-blankline.nvim", opts = opts.ibl, main = "ibl"},
     { "nvim-treesitter/nvim-treesitter", opts = opts.nvim_treesitter, build = ":TSUpdate" },
 
@@ -41,6 +40,9 @@ return {
 
     -- tabpicker
     { "ZachVec/tabpicker.nvim", opts = opts.tabpicker},
+
+    -- gitsigns
+    require("plugins.gitsigns"),
 
     -- tabline & winbar & statusline
     require("plugins.lualine"),
@@ -66,3 +68,4 @@ return {
     -- code completion
     require("plugins.cmp"),
 }
+
