@@ -61,9 +61,9 @@ return {
         nnoremap("<leader>fb", builtin.buffers)     -- find buffers
         nnoremap("<leader>ft", aerial.aerial)       -- find tags
 
-        nnoremap("<leader>gf", builtin.live_grep)   -- grep files
-        nnoremap("<leader>gb", find_buffers)        -- grep buffers
-        nnoremap("<leader>gt", builtin.tags)        -- grep tags (by CTAG)
+        nnoremap("<leader>Ff", builtin.live_grep)   -- grep files
+        nnoremap("<leader>Fb", find_buffers)        -- grep buffers
+        nnoremap("<leader>Ft", builtin.tags)        -- grep tags (by CTAG)
 
         nnoremap("<leader>hs", builtin.search_history)   -- history of search
         nnoremap("<leader>hc", builtin.command_history)  -- history of command
