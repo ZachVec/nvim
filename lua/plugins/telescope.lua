@@ -42,33 +42,25 @@ return {
           -- Available modes: symbols, lines, both
           show_columns = "both",
         },
-        tabpicker = {
-          mappings = {
-            n = { ["dd"] = "close_tab" },
-          },
-        },
       },
     })
     require("telescope").load_extension("fzf")
     local aerial = require("telescope").load_extension("aerial")
-    local tabpicker = require("telescope").load_extension("tabpicker")
-
     local builtin = require("telescope.builtin")
 
     -- custom mappings
-    local nnoremap = require("utils").nnoremap
-    nnoremap("<leader>ff", builtin.find_files) -- find files
-    nnoremap("<leader>fb", builtin.buffers) -- find buffers
-    nnoremap("<leader>ft", aerial.aerial) -- find tags
+    local nnoremap = require("utils.keymapper").nnoremap
 
-    nnoremap("<leader>Ff", builtin.live_grep) -- grep files
-    nnoremap("<leader>Fb", function() builtin.live_grep({ grep_open_files = true }) end) --grep buffers
-    nnoremap("<leader>Ft", builtin.tags) -- grep tags (by CTAG)
+    nnoremap("<leader>ff", builtin.find_files, { desc = "Find files in repo" })
+    nnoremap("<leader>fb", builtin.buffers, { desc = "Find buffers in repo" })
+    nnoremap("<leader>ft", builtin.tags, { desc = "Find tags in repo" })
+    nnoremap("<leader>f<tab>", require("utils.tabpicker").find_tabpages, { desc = "Find tabs" })
 
-    nnoremap("<leader>hs", builtin.search_history) -- history of search
-    nnoremap("<leader>hc", builtin.command_history) -- history of command
-    nnoremap("<leader>lt", tabpicker.find_tabpages) -- list tabs
-    nnoremap("<leader>lr", builtin.registers) -- list registers
-    nnoremap("<leader>lc", builtin.colorscheme) -- list colorscheme
+    nnoremap("<leader>Ff", builtin.live_grep, { desc = "Grep files" })
+    nnoremap("<leader>Fb", function() builtin.live_grep({ grep_open_files = true }) end, { desc = "Grep buffer" })
+
+    nnoremap("<leader>jt", aerial.aerial, { desc = "jump to tags in document" })
+    nnoremap("<leader>lr", builtin.registers, { desc = "List all registers" })
+    nnoremap("<leader>lc", builtin.colorscheme, { desc = "List all colorschemes" })
   end,
 }

@@ -40,9 +40,6 @@ return {
   -- LSP server installer
   { "williamboman/mason-lspconfig.nvim", opts = opts.mason_lspconfig },
 
-  -- tabpicker
-  { "ZachVec/tabpicker.nvim", opts = opts.tabpicker },
-
   -- gitsigns
   require("plugins.gitsigns"),
 
