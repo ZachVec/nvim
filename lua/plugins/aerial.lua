@@ -6,7 +6,7 @@ return {
   },
   config = function()
     require("aerial").setup({})
-    local nnoremap = require("utils").nnoremap
+    local nnoremap = require("utils.keymapper").nnoremap
     nnoremap("<leader>tt", "<cmd>AerialToggle! right<CR>")
   end,
 }

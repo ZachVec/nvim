@@ -7,7 +7,7 @@ return {
     vim.opt.termguicolors = true
   end,
   config = function()
-    local nnoremap = require("utils").nnoremap
+    local nnoremap = require("utils.keymapper").nnoremap
     local function on_attach(bufnr)
       local api = require("nvim-tree.api")
 

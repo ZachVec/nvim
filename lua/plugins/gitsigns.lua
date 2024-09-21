@@ -2,7 +2,7 @@ return {
   "lewis6991/gitsigns.nvim",
   config = function()
     require("gitsigns").setup({})
-    local nnoremap = require("utils").nnoremap
+    local nnoremap = require("utils.keymapper").nnoremap
     nnoremap("<leader>gd", "<cmd>Gitsigns diffthis<cr>") -- git diff
     nnoremap("<leader>gn", "<cmd>Gitsigns next_hunk<cr>") -- git next hunk
     nnoremap("<leader>gN", "<cmd>Gitsigns prev_hunk<cr>") -- git prev hunk

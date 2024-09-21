@@ -23,7 +23,7 @@ return {
       lspconfig[client].setup(opts)
     end
 
-    local nnoremap = require("utils").nnoremap
+    local nnoremap = require("utils.keymapper").nnoremap
     nnoremap("K", vim.lsp.buf.hover)
     nnoremap("gd", vim.lsp.buf.definition)
     nnoremap("gD", vim.lsp.buf.declaration)

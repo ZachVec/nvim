@@ -1,4 +1,4 @@
-local nnoremap = require("utils").nnoremap
+local nnoremap = require("utils.keymapper").nnoremap
 
 nnoremap("<C-h>", "<C-w>h") -- navigate left
 nnoremap("<C-j>", "<C-w>j") -- navigate down
@@ -17,10 +17,10 @@ nnoremap("<M-l>", ":vertical resize +2<CR>")
 nnoremap("<M-DOWN>", "mz:m+<cr>`z")
 nnoremap("<M-UP>", "mz:m-2<cr>`z")
 
-local vnoremap = require("utils").vnoremap
+local vnoremap = require("utils.keymapper").vnoremap
 -- Hint: start visual mode with the same area as the previous area and the same mode
 -- keyset('v', '<', '<gv', opts)
 -- keyset('v', '>', '>gv', opts)
 
-local inoremap = require("utils").inoremap
+local inoremap = require("utils.keymapper").inoremap
 inoremap("jj", "<ESC>")

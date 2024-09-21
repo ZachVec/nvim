@@ -9,7 +9,7 @@ return {
         cpp = { "clang-format" },
       },
     })
-    local nnoremap = require("utils").nnoremap
+    local nnoremap = require("utils.keymapper").nnoremap
     nnoremap("<leader>m", require("conform").format)
   end,
 }
