@@ -1,19 +1,24 @@
-local opts = require("configs")
+local opts = require("plugins.options")
 local cond = require("utils.conditions")
 
 return {
-  -- visual
   { "ellisonleao/gruvbox.nvim", opts = opts.gruvbox, lazy = false, priority = 1000 },
   { "folke/tokyonight.nvim", opts = opts.tokyonight, lazy = false, priority = 1000 },
   { "j-hui/fidget.nvim", opts = opts.fidget },
   { "lukas-reineke/indent-blankline.nvim", opts = opts.ibl, main = "ibl" },
   { "nvim-treesitter/nvim-treesitter", opts = opts.nvim_treesitter, build = ":TSUpdate" },
-  { "nvim-lualine/lualine.nvim", opts = opts.lualine, dependencies = "nvim-tree/nvim-web-devicons" },
+  { "chentoast/marks.nvim", opts = opts.marks, event = "VeryLazy" },
+  { "smoka7/hop.nvim", opts = opts.hop, version = "*" },
+  { "lewis6991/gitsigns.nvim", opts = opts.gitsigns },
+  { "echasnovski/mini.pairs", opts = opts.minipairs, version = "*" },
+  { "aserowy/tmux.nvim", opts = opts.tmux, lazy = cond.not_in_tmux() },
+  { "numToStr/Comment.nvim", opts = opts.Comment },
+  { "williamboman/mason.nvim", opts = opts.mason },
+  { "nvim-lualine/lualine.nvim", opts = opts.lualine, dependencies = { "nvim-tree/nvim-web-devicons" } },
 
   {
     "stevearc/aerial.nvim",
     opts = opts.aerial,
-    keys = {},
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   },
 
@@ -23,34 +28,46 @@ return {
     opts = opts.conform,
   },
 
-  -- git stuff
-  { "lewis6991/gitsigns.nvim", opts = opts.gitsigns },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "neovim/nvim-lspconfig",
+    },
+    opts = opts.mason_lspconfig,
+  },
 
-  -- auto pair
-  { "echasnovski/mini.pairs", opts = opts.minipairs, version = "*" },
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = "nvim-tree/nvim-web-devicons",
+    init = function()
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
+      vim.opt.termguicolors = true
+    end,
+    opts = opts.nvim_tree,
+  },
 
-  -- navigate between tmux & nvim
-  { "aserowy/tmux.nvim", opts = opts.tmux, lazy = cond.not_in_tmux },
+  {
+    "nvim-telescope/telescope.nvim",
+    branch = "0.1.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    },
+    opts = opts.telescope,
+  },
 
-  -- block & line comments
-  { "numToStr/Comment.nvim", opts = opts.Comment },
+  {
+    "folke/which-key.nvim",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "stevearc/conform.nvim",
+      "lewis6991/gitsigns.nvim",
+      "stevearc/aerial.nvim",
+    },
+    opts = opts.which_key,
+  },
 
-  -- PKG manager
-  { "williamboman/mason.nvim", opts = opts.mason },
-
-  -- LSP server installer
-  { "williamboman/mason-lspconfig.nvim", opts = opts.mason_lspconfig },
-
-  { "smoka7/hop.nvim", version = "*", opts = opts.hop },
-
-  { "neovim/nvim-lspconfig" },
-
-  -- FileExplorer
-  require("plugins.nvim_tree"),
-
-  -- Navigator
-  require("plugins.telescope"),
-
-  -- code completion
   require("plugins.cmp"),
 }
