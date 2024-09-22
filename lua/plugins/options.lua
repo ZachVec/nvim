@@ -285,7 +285,7 @@ options.which_key = function()
     { ";c", telescope.colorscheme, desc = "List colorschemes" },
     { ";t", require("utils.tabpicker").find_tabpages, desc = "List tabs" },
     { ';r', telescope.registers, desc = "List registers" },
-    { ';b', telescope.marks, desc = "List bookmarks" },
+    { ';m', telescope.marks, desc = "List bookmarks" },
 
     -- Group: Go to
     { "g", group = "Go to ..." },
