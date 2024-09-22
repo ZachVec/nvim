@@ -6,7 +6,20 @@ return {
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
   },
   config = function()
+    local actions = require("telescope.actions")
     require("telescope").setup({
+      defaults = {
+        mappings = {
+          i = {
+            ["<C-j>"] = actions.cycle_history_next,
+            ["<C-k>"] = actions.cycle_history_prev,
+          },
+          n = {
+            ["<C-j>"] = actions.cycle_history_next,
+            ["<C-k>"] = actions.cycle_history_prev,
+          },
+        },
+      },
       pickers = {
         find_files = {
           theme = "dropdown",
@@ -17,7 +30,7 @@ return {
         buffers = {
           mappings = {
             n = {
-              ["dd"] = "delete_buffer",
+              ["dd"] = actions.delete_buffer,
             },
           },
           layout_config = { width = 0.6 },
@@ -45,22 +58,6 @@ return {
       },
     })
     require("telescope").load_extension("fzf")
-    local aerial = require("telescope").load_extension("aerial")
-    local builtin = require("telescope.builtin")
-
-    -- custom mappings
-    local nnoremap = require("utils.keymapper").nnoremap
-
-    nnoremap("<leader>ff", builtin.find_files, { desc = "Find files in repo" })
-    nnoremap("<leader>fb", builtin.buffers, { desc = "Find buffers in repo" })
-    nnoremap("<leader>ft", builtin.tags, { desc = "Find tags in repo" })
-    nnoremap("<leader>f<tab>", require("utils.tabpicker").find_tabpages, { desc = "Find tabs" })
-
-    nnoremap("<leader>Ff", builtin.live_grep, { desc = "Grep files" })
-    nnoremap("<leader>Fb", function() builtin.live_grep({ grep_open_files = true }) end, { desc = "Grep buffer" })
-
-    nnoremap("<leader>jt", aerial.aerial, { desc = "jump to tags in document" })
-    nnoremap("<leader>lr", builtin.registers, { desc = "List all registers" })
-    nnoremap("<leader>lc", builtin.colorscheme, { desc = "List all colorschemes" })
+    require("telescope").load_extension("aerial")
   end,
 }

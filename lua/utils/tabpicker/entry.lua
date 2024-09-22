@@ -30,23 +30,23 @@ function TabEntry:add_file(filename) table.insert(self.filenames, filename) end
 function TabEntry:close() vim.api.nvim_command("tabclose " .. self.id) end
 
 function TabEntry.list()
-    local current_tab_id = vim.api.nvim_get_current_tabpage()
-    local tab_entries = {}
-    for _, tabid in ipairs(vim.api.nvim_list_tabpages()) do
-        local tab = TabEntry:new({ id = tabid, iscurrent = current_tab_id == tabid })
-        local winids = vim.tbl_filter(
-            function(winid) return vim.api.nvim_win_get_config(winid).relative ~= nil end,
-            vim.api.nvim_tabpage_list_wins(tabid)
-        )
-        for _, winid in ipairs(winids) do
-            local bufnr = vim.api.nvim_win_get_buf(winid)
-            local filepath = vim.api.nvim_buf_get_name(bufnr)
-            local filename = vim.fn.fnamemodify(filepath, ":t")
-            tab:add_file(filename)
-        end
-        table.insert(tab_entries, tab)
+  local current_tab_id = vim.api.nvim_get_current_tabpage()
+  local tab_entries = {}
+  for _, tabid in ipairs(vim.api.nvim_list_tabpages()) do
+    local tab = TabEntry:new({ id = tabid, iscurrent = current_tab_id == tabid })
+    local winids = vim.tbl_filter(
+      function(winid) return vim.api.nvim_win_get_config(winid).relative ~= nil end,
+      vim.api.nvim_tabpage_list_wins(tabid)
+    )
+    for _, winid in ipairs(winids) do
+      local bufnr = vim.api.nvim_win_get_buf(winid)
+      local filepath = vim.api.nvim_buf_get_name(bufnr)
+      local filename = vim.fn.fnamemodify(filepath, ":t")
+      tab:add_file(filename)
     end
-    return tab_entries
+    table.insert(tab_entries, tab)
+  end
+  return tab_entries
 end
 
 return TabEntry

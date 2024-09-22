@@ -94,8 +94,5 @@ local opts = {
   extensions = { "aerial", "lazy", "mason", "nvim-tree" },
 }
 
-return {
-  "nvim-lualine/lualine.nvim",
-  dependencies = "nvim-tree/nvim-web-devicons",
-  opts = opts,
-}
+-- return { "nvim-lualine/lualine.nvim", dependencies = "nvim-tree/nvim-web-devicons", opts = opts}
+return opts

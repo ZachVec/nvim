@@ -1,21 +1,5 @@
-local opts = setmetatable({
-  nvim_treesitter = {
-    ensure_installed = { "c", "cpp", "lua", "python", "markdown", "markdown_inline", "vim", "vimdoc" },
-  },
-  bufferline = {
-    options = {
-      mode = "tabs",
-      offsets = { { filetype = "NvimTree", text = "FileExplorer", separator = true, text_align = "left" } },
-    },
-  },
-  mason_lspconfig = { ensure_installed = { "lua_ls", "pyright", "clangd" } },
-}, {
-  __index = function(_, _) return {} end,
-})
-
-local cond = {
-  not_in_tmux = function() return os.getenv("TMUX") == nil end,
-}
+local opts = require("configs")
+local cond = require("utils.conditions")
 
 return {
   -- visual
@@ -24,12 +8,29 @@ return {
   { "j-hui/fidget.nvim", opts = opts.fidget },
   { "lukas-reineke/indent-blankline.nvim", opts = opts.ibl, main = "ibl" },
   { "nvim-treesitter/nvim-treesitter", opts = opts.nvim_treesitter, build = ":TSUpdate" },
+  { "nvim-lualine/lualine.nvim", opts = opts.lualine, dependencies = "nvim-tree/nvim-web-devicons" },
+
+  {
+    "stevearc/aerial.nvim",
+    opts = opts.aerial,
+    keys = {},
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+  },
+
+  {
+    "stevearc/conform.nvim",
+    init = function() vim.g.disable_autoformat = true end,
+    opts = opts.conform,
+  },
+
+  -- git stuff
+  { "lewis6991/gitsigns.nvim", opts = opts.gitsigns },
 
   -- auto pair
   { "echasnovski/mini.pairs", opts = opts.minipairs, version = "*" },
 
   -- navigate between tmux & nvim
-  { "aserowy/tmux.nvim", opts = opts.tmux, lazy = cond.not_in_tmux() },
+  { "aserowy/tmux.nvim", opts = opts.tmux, lazy = cond.not_in_tmux },
 
   -- block & line comments
   { "numToStr/Comment.nvim", opts = opts.Comment },
@@ -40,29 +41,15 @@ return {
   -- LSP server installer
   { "williamboman/mason-lspconfig.nvim", opts = opts.mason_lspconfig },
 
-  -- gitsigns
-  require("plugins.gitsigns"),
+  { "smoka7/hop.nvim", version = "*", opts = opts.hop },
 
-  -- tabline & winbar & statusline
-  require("plugins.lualine"),
-
-  -- tags outline
-  require("plugins.aerial"),
-
-  -- LSP setups & keymaps
-  require("plugins.lspconfig"),
-
-  -- Formatters
-  require("plugins.conform"),
+  { "neovim/nvim-lspconfig" },
 
   -- FileExplorer
   require("plugins.nvim_tree"),
 
   -- Navigator
   require("plugins.telescope"),
-
-  -- Hop around
-  require("plugins.hop"),
 
   -- code completion
   require("plugins.cmp"),

@@ -7,7 +7,6 @@ return {
     vim.opt.termguicolors = true
   end,
   config = function()
-    local nnoremap = require("utils.keymapper").nnoremap
     local function on_attach(bufnr)
       local api = require("nvim-tree.api")
 
@@ -18,8 +17,13 @@ return {
       vim.keymap.del("n", "<C-e>", { buffer = bufnr })
 
       -- custom mappings (for nvim-tree buffer only)
-      nnoremap("?", api.tree.toggle_help, { desc = "nvim-tree: Help", buffer = bufnr, nowait = true })
-      nnoremap("<C-t>", api.tree.change_root_to_parent, { desc = "nvim-tree: Up", buffer = bufnr, nowait = true })
+      vim.keymap.set("n", "?", api.tree.toggle_help, { desc = "nvim-tree: Help", buffer = bufnr, nowait = true })
+      vim.keymap.set(
+        "n",
+        "<C-t>",
+        api.tree.change_root_to_parent,
+        { desc = "nvim-tree: Up", buffer = bufnr, nowait = true }
+      )
     end
 
     require("nvim-tree").setup({
@@ -37,8 +41,5 @@ return {
       },
       on_attach = on_attach,
     })
-
-    nnoremap("<C-n>", "<cmd>NvimTreeToggle<cr>", { desc = "nvim-tree: Toggle", nowait = true })
-    nnoremap("<leader>r", "<cmd>NvimTreeFindFile<cr>", { desc = "nvim-tree: Reveal", nowait = true })
   end,
 }
