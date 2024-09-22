@@ -15,11 +15,19 @@ return {
   { "numToStr/Comment.nvim", opts = opts.Comment },
   { "williamboman/mason.nvim", opts = opts.mason },
   { "nvim-lualine/lualine.nvim", opts = opts.lualine, dependencies = { "nvim-tree/nvim-web-devicons" } },
+  { "folke/which-key.nvim", opts = opts.which_key },
 
   {
     "stevearc/aerial.nvim",
-    opts = opts.aerial,
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      require("aerial").setup(opts.aerial())
+      require("telescope").load_extension("aerial")
+    end,
   },
 
   {
@@ -51,23 +59,55 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     branch = "0.1.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-    },
+    dependencies = "nvim-lua/plenary.nvim",
     opts = opts.telescope,
   },
 
   {
-    "folke/which-key.nvim",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "stevearc/conform.nvim",
-      "lewis6991/gitsigns.nvim",
-      "stevearc/aerial.nvim",
-    },
-    opts = opts.which_key,
+    "nvim-telescope/telescope-fzf-native.nvim",
+    build = "make",
+    dependencies = "nvim-telescope/telescope.nvim",
+    config = function() require("telescope").load_extension("fzf") end,
   },
 
-  require("plugins.cmp"),
+  {
+    "hrsh7th/nvim-cmp",
+    version = false,
+    event = "InsertEnter",
+    dependencies = {
+      -- basic code completion
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+
+      -- for luasnip code completion
+      "L3MON4D3/LuaSnip",
+      "L3MON4D3/cmp_luasnip",
+
+      -- frequently used code snippets
+      "rafamadriz/friendly-snippets",
+      "onsails/lspkind-nvim",
+    },
+    config = function()
+      local cmp = require("cmp")
+      cmp.setup(opts.cmp())
+      require("luasnip.loaders.from_vscode").lazy_load()
+      cmp.setup.cmdline({ "/", "?" }, {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = "buffer" },
+        },
+      })
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = "path" },
+        }, {
+          { name = "cmdline" },
+        }),
+        matching = { disallow_symbol_nonprefix_matching = false },
+      })
+    end,
+  },
 }

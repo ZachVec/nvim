@@ -1,13 +1,15 @@
 local cond = require("utils.conditions")
 
---- @type table<string, table | function>
-local options = setmetatable({}, { __index = function(_, _) return {} end })
+--- @type table<string, function>
+local options = setmetatable({}, {
+  __index = function(_, _)
+    return function() return {} end
+  end,
+})
 
-options.hop = {
-  keys = "etovxqpdygfblzhckisuran",
-}
+function options.hop() return { keys = "etovxqpdygfblzhckisuran" } end
 
-options.lualine = (function()
+function options.lualine()
   local comp = {
     mode = "mode",
     icon = {
@@ -98,20 +100,24 @@ options.lualine = (function()
     },
     extensions = { "aerial", "lazy", "mason", "nvim-tree" },
   }
-end)()
+end
 
-options.bufferline = {
-  options = {
-    mode = "tabs",
-    offsets = { { filetype = "NvimTree", text = "FileExplorer", separator = true, text_align = "left" } },
-  },
-}
+function options.bufferline()
+  return {
+    options = {
+      mode = "tabs",
+      offsets = { { filetype = "NvimTree", text = "FileExplorer", separator = true, text_align = "left" } },
+    },
+  }
+end
 
-options.nvim_treesitter = {
-  ensure_installed = { "c", "cpp", "lua", "python", "markdown", "markdown_inline", "vim", "vimdoc" },
-}
+function options.nvim_treesitter()
+  return {
+    ensure_installed = { "c", "cpp", "lua", "python", "markdown", "markdown_inline", "vim", "vimdoc" },
+  }
+end
 
-options.mason_lspconfig = function()
+function options.mason_lspconfig()
   local setup_opts = {
     lua_ls = {
       settings = {
@@ -142,16 +148,19 @@ options.mason_lspconfig = function()
   }
 end
 
-options.conform = {
-  formatters_by_ft = {
-    python = { "isort", "black" },
-    c = { "clang-format" },
-    cpp = { "clang-format" },
-    lua = { "stylua" },
-  },
-}
+function options.conform()
+  return {
+    formatters_by_ft = {
+      python = { "isort", "black" },
+      c = { "clang-format" },
+      cpp = { "clang-format" },
+      lua = { "stylua" },
+      json = { "jq" },
+    },
+  }
+end
 
-options.nvim_tree = function()
+function options.nvim_tree()
   local function on_attach(bufnr)
     local api = require("nvim-tree.api")
 
@@ -187,7 +196,7 @@ options.nvim_tree = function()
   }
 end
 
-options.telescope = function()
+function options.telescope()
   local actions = require("telescope.actions")
   return {
     defaults = {
@@ -241,10 +250,7 @@ options.telescope = function()
   }
 end
 
-options.which_key = function()
-  require("telescope").load_extension("fzf")
-  require("telescope").load_extension("aerial")
-
+function options.which_key()
   local telescope = require("telescope.builtin")
   local config = {}
   config.plugins = {
@@ -284,8 +290,8 @@ options.which_key = function()
     { ";", group = "List someting?" },
     { ";c", telescope.colorscheme, desc = "List colorschemes" },
     { ";t", require("utils.tabpicker").find_tabpages, desc = "List tabs" },
-    { ';r', telescope.registers, desc = "List registers" },
-    { ';m', telescope.marks, desc = "List bookmarks" },
+    { ";r", telescope.registers, desc = "List registers" },
+    { ";m", telescope.marks, desc = "List bookmarks" },
 
     -- Group: Go to
     { "g", group = "Go to ..." },
@@ -297,7 +303,7 @@ options.which_key = function()
     { "gl", "<cmd>tabnext<cr>", desc = "Go to next tab" },
 
     -- Group: Find
-    { "<leader>f", group = "Find" },
+    { "<leader>f", group = "Find files/buffers/tags" },
     { "<leader>ff", telescope.find_files, desc = "Find files by filename" },
     { "<leader>fb", telescope.buffers, desc = "Find buffers by filename" },
     { "<leader>ft", telescope.tags, desc = "Find tags via CTAG" },
@@ -310,7 +316,7 @@ options.which_key = function()
     { "<leader>fT", "<cmd>Telescope aerial<cr>", desc = "Find tags via treesitter" },
 
     -- Group: Git
-    { "<leader>g", group = "Git with gitsigns" },
+    { "<leader>g", group = "Git operations" },
     { "<leader>gd", "<cmd>Gitsigns diffthis<cr>", desc = "Diff current file" },
     { "<leader>gn", "<cmd>Gitsigns next_hunk<cr>", desc = "Next hunk" },
     { "<leader>gN", "<cmd>Gitsigns prev_hunk<cr>", desc = "Prev hunk" },
@@ -327,6 +333,42 @@ options.which_key = function()
   end
 
   return config
+end
+
+function options.cmp()
+  local lspkind = require("lspkind")
+  local cmp = require("cmp")
+  return {
+    snippet = {
+      expand = function(args) require("luasnip").lsp_expand(args.body) end,
+    },
+    sources = cmp.config.sources({
+      { name = "nvim_lsp" },
+      { name = "luasnip" },
+    }, {
+      { name = "buffer" },
+      { name = "path" },
+    }),
+    mapping = {
+      ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+      ["<Tab>"] = cmp.mapping.select_next_item(),
+      -- ['<ESC>'] = cmp.mapping.abort(),
+      ["<CR>"] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
+      ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
+      ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
+    },
+    formatting = {
+      format = lspkind.cmp_format({
+        with_text = true, -- do not show text alongside icons
+        maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+        before = function(entry, vim_item)
+          -- Source 显示提示来源
+          vim_item.menu = "[" .. string.upper(entry.source.name) .. "]"
+          return vim_item
+        end,
+      }),
+    },
+  }
 end
 
 return options
