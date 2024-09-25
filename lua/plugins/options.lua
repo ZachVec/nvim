@@ -390,6 +390,7 @@ function options.toggleterm()
   return {
     winbar = {
       enabled = true,
+      name_formatter = function(term) return "Terminal #" .. term.id end,
     },
   }
 end
