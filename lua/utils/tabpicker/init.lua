@@ -1,4 +1,4 @@
-local Entry = require("utils.tabpicker.entry")
+local TabEntry = require("utils.tabpicker.entry")
 
 local tabpicker = {}
 
@@ -6,37 +6,23 @@ local tabpicker = {}
 ---@param opts table the options of picker
 function tabpicker.find_tabpages(opts)
   opts = opts or {}
-  local pickers = require("telescope.pickers")
-  local finders = require("telescope.finders")
-  local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
-  local conf = require("telescope.config").values
-  pickers
-    .new(opts, {
-      preview = false,
-      prompt_title = "Tabs",
-      finder = finders.new_table({
-        results = Entry.list(),
-        entry_maker = function(entry)
-          return {
-            value = entry,
-            display = function(self) return self.value:format() end,
-            ordinal = tostring(entry.id),
-          }
-        end,
-      }),
-      sorter = conf.generic_sorter({}),
-      attach_mappings = function(prompt_bufnr, map)
-        actions.select_default:replace(function()
-          actions.close(prompt_bufnr)
-          local entry = action_state.get_selected_entry()
-          vim.api.nvim_set_current_tabpage(entry.value.id)
-        end)
-        map("n", "dd", tabpicker.close_tab)
-        return true
-      end,
-    })
-    :find()
+  vim.ui.select(
+    TabEntry.list(),
+    {
+      prompt = opts.prompt or "Tabs",
+      kind = "Tab-Selector",
+      ---return format string given tab entry
+      ---@param item TabEntry
+      ---@return string
+      format_item = function(item) return item:format() end,
+    },
+    ---set the current tabpage to the selected one
+    ---@param item TabEntry
+    ---@return nil
+    function(item)
+      if item ~= nil then return vim.api.nvim_set_current_tabpage(item.id) end
+    end
+  )
 end
 
 ---close the selected tabs within prompt bufnr

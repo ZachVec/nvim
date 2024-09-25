@@ -1,47 +1,76 @@
+---@class TabEntry
+---@field id number
+---@field iscurrent boolean
+---@field filenames table<string>
 local TabEntry = {}
 
 TabEntry.__index = TabEntry
 
-function TabEntry:new(opts)
-  opts = opts or {}
-  local obj = setmetatable({
-    id = opts.id or 0,
-    iscurrent = opts.iscurrent or false,
-    filenames = opts.filenames or {},
-  }, self)
-  return obj
+function TabEntry.new(id, iscurrent, filenames)
+  local self = setmetatable({}, TabEntry)
+  self.id = id
+  self.iscurrent = iscurrent
+  self.filenames = filenames or {}
+  return self
 end
 
+---returns the formatted tab entry string
+---@return string
 function TabEntry:format()
   local default_name = "[No Name]"
+
+  ---@type table<string>
   local filenames = {}
+
   for _, item in ipairs(self.filenames) do
     table.insert(filenames, item ~= "" and item or default_name)
   end
   local filename = table.concat(filenames, ", ")
-  return string.format("%d: %s%s", self.id, filename, self.iscurrent and " <" or "")
+  local suffix = self.iscurrent and " <-- current tab" or ""
+  return string.format("%d: %s%s", self.id, filename, suffix)
 end
 
---- add filename to filenames
+---add filename to filenames
 ---@param filename string
 function TabEntry:add_file(filename) table.insert(self.filenames, filename) end
 
 ---close the tab itself
 function TabEntry:close() vim.api.nvim_command("tabclose " .. self.id) end
 
-function TabEntry.list()
+---returns current tab entries
+---@return table<TabEntry>
+function TabEntry.list(opts)
+  opts = vim.tbl_deep_extend("force", {
+    disabled = {
+      buftypes = { "acwrite", "help", "nofile", "quickfix", "prompt" },
+      filetypes = { "toggleterm" },
+    },
+  }, opts or {})
+
   local current_tab_id = vim.api.nvim_get_current_tabpage()
   local tab_entries = {}
   for _, tabid in ipairs(vim.api.nvim_list_tabpages()) do
-    local tab = TabEntry:new({ id = tabid, iscurrent = current_tab_id == tabid })
-    local winids = vim.tbl_filter(
-      function(winid) return vim.api.nvim_win_get_config(winid).relative ~= nil end,
-      vim.api.nvim_tabpage_list_wins(tabid)
-    )
+    local tab = TabEntry.new(tabid, current_tab_id == tabid, {})
+    local winids = vim.tbl_filter(function(winid)
+      if vim.api.nvim_win_get_config(winid).relative == nil then return false end
+      local bufnr = vim.api.nvim_win_get_buf(winid)
+      local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
+      if vim.tbl_contains(opts.disabled.buftypes, buftype) then return false end
+      local filetype = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
+      if vim.tbl_contains(opts.disabled.filetypes, filetype) then return false end
+      return true
+    end, vim.api.nvim_tabpage_list_wins(tabid))
     for _, winid in ipairs(winids) do
       local bufnr = vim.api.nvim_win_get_buf(winid)
       local filepath = vim.api.nvim_buf_get_name(bufnr)
       local filename = vim.fn.fnamemodify(filepath, ":t")
+      print(vim.inspect(
+          {
+              vim.api.nvim_get_option_value("buftype", {buf=bufnr}),
+              vim.api.nvim_get_option_value("filetype", {buf=bufnr}),
+              bufnr = bufnr
+          }
+      ))
       tab:add_file(filename)
     end
     table.insert(tab_entries, tab)
