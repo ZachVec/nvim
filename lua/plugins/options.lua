@@ -325,7 +325,7 @@ function options.which_key()
     { "<leader>gu", "<cmd>Gitsigns undo_stage_hunk<cr>", desc = "Unstage hunk" },
     { "<leader>gr", "<cmd>Gitsigns reset_hunk<cr>", desc = "Reset hunk" },
   }
-  if cond.not_has_loaded("tmux") then
+  if cond.not_loaded("tmux") then
     table.insert(config.spec, { "<C-h>", "<C-w>h", desc = "Navigate to window on the left" })
     table.insert(config.spec, { "<C-j>", "<C-w>j", desc = "Navigate to window on the bottom" })
     table.insert(config.spec, { "<C-k>", "<C-w>k", desc = "Navigate to window on the top" })

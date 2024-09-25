@@ -26,11 +26,11 @@ function conditions.not_buffer_empty() return not conditions.buffer_empty() end
 ---chech if plugin has loaded
 ---@param name string
 ---@return boolean
-function conditions.has_loaded(name) return package.loaded[name] ~= nil end
+function conditions.loaded(name) return package.loaded[name] ~= nil end
 
 ---chech if plugin has not loaded
 ---@param name string
 ---@return boolean
-function conditions.not_has_loaded(name) return package.loaded[name] ~= nil end
+function conditions.not_loaded(name) return not conditions.loaded(name) end
 
 return conditions
