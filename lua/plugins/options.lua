@@ -55,7 +55,7 @@ function options.lualine()
   }
   return {
     options = {
-      disabled_filetypes = { "NvimTree", "aerial" },
+      disabled_filetypes = { "NvimTree", "aerial", "toggleterm" },
       component_separators = "",
     },
     sections = {
@@ -246,12 +246,20 @@ function options.telescope()
         -- Available modes: symbols, lines, both
         show_columns = "both",
       },
+      ["ui-select"] = {
+        require("telescope.themes").get_dropdown({}),
+      },
     },
   }
 end
 
 function options.which_key()
   local telescope = require("telescope.builtin")
+  local lazygit = require("toggleterm.terminal").Terminal:new({
+    cmd = "lazygit",
+    hidden = true,
+  })
+
   local config = {}
   config.plugins = {
     marks = false,
@@ -275,6 +283,10 @@ function options.which_key()
     { "<M-DOWN>", "mz:m+<cr>`z", desc = "Swap line downwards", mode = "v" },
     { "<M-UP>", "mz:m-2<cr>`z", desc = "Swap line upwards", mode = "v" },
 
+    -- terminal mode
+    { "<ESC>", "<C-\\><C-n>", mode = "t" },
+    { "<F12>", "<CMD>ToggleTerm<CR>", desc = "Toggle Terminal", mode = "t" },
+
     -- normal mode
     { "K", vim.lsp.buf.hover, desc = "Show Document" },
     { "f", "<cmd>HopChar1CurrentLineAC<cr>", desc = "find word forward by leading character" },
@@ -282,6 +294,7 @@ function options.which_key()
     { "<F2>", vim.lsp.buf.rename, desc = "rename variable" },
     { "<F3>", vim.lsp.buf.code_action, desc = "code action" },
     { "<F4>", require("conform").format, desc = "Format document" },
+    { "<F12>", "<CMD>ToggleTerm<CR>", desc = "Toggle Terminal" },
 
     { "<C-n>", "<cmd>NvimTreeFindFileToggle<cr>", desc = "NvimTreeToggle" },
     { "<C-m>", "<cmd>AerialToggle! right<cr>", desc = "AerialToggle" },
@@ -289,9 +302,10 @@ function options.which_key()
     -- Group: List
     { ";", group = "List someting?" },
     { ";c", telescope.colorscheme, desc = "List colorschemes" },
-    { ";t", require("utils.tabpicker").find_tabpages, desc = "List tabs" },
+    { ";<TAB>", require("utils.tabpicker").find_tabpages, desc = "List tabs" },
     { ";r", telescope.registers, desc = "List registers" },
     { ";m", telescope.marks, desc = "List bookmarks" },
+    { ";t", "<CMD>TermSelect<CR>", desc = "List Terminals" },
 
     -- Group: Go to
     { "g", group = "Go to ..." },
@@ -324,6 +338,7 @@ function options.which_key()
     { "<leader>gs", "<cmd>Gitsigns stage_hunk<cr>", desc = "Stage hunk" },
     { "<leader>gu", "<cmd>Gitsigns undo_stage_hunk<cr>", desc = "Unstage hunk" },
     { "<leader>gr", "<cmd>Gitsigns reset_hunk<cr>", desc = "Reset hunk" },
+    { "<leader>gt", function() lazygit:toggle() end, desc = "Run Lazygit" },
   }
   if cond.not_loaded("tmux") then
     table.insert(config.spec, { "<C-h>", "<C-w>h", desc = "Navigate to window on the left" })
@@ -367,6 +382,14 @@ function options.cmp()
           return vim_item
         end,
       }),
+    },
+  }
+end
+
+function options.toggleterm()
+  return {
+    winbar = {
+      enabled = true,
     },
   }
 end

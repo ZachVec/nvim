@@ -16,27 +16,15 @@ return {
   { "williamboman/mason.nvim", opts = opts.mason },
   { "nvim-lualine/lualine.nvim", opts = opts.lualine, dependencies = { "nvim-tree/nvim-web-devicons" } },
   { "folke/which-key.nvim", opts = opts.which_key },
+  { "akinsho/toggleterm.nvim", opts = opts.toggleterm },
 
-  {
-    "stevearc/aerial.nvim",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-      "nvim-telescope/telescope.nvim",
-    },
-    config = function()
-      require("aerial").setup(opts.aerial())
-      require("telescope").load_extension("aerial")
-    end,
-  },
-
-  {
+  { -- formatter
     "stevearc/conform.nvim",
     init = function() vim.g.disable_autoformat = true end,
     opts = opts.conform,
   },
 
-  {
+  { -- lsp
     "williamboman/mason-lspconfig.nvim",
     dependencies = {
       "williamboman/mason.nvim",
@@ -45,7 +33,7 @@ return {
     opts = opts.mason_lspconfig,
   },
 
-  {
+  { -- file browser
     "nvim-tree/nvim-tree.lua",
     dependencies = "nvim-tree/nvim-web-devicons",
     init = function()
@@ -56,21 +44,37 @@ return {
     opts = opts.nvim_tree,
   },
 
-  {
+  { -- telescopes
     "nvim-telescope/telescope.nvim",
     branch = "0.1.x",
     dependencies = "nvim-lua/plenary.nvim",
     opts = opts.telescope,
   },
 
-  {
+  { -- sorter
     "nvim-telescope/telescope-fzf-native.nvim",
     build = "make",
     dependencies = "nvim-telescope/telescope.nvim",
     config = function() require("telescope").load_extension("fzf") end,
   },
 
-  {
+  { -- find tags in current doc & provide current context in winbar
+    "stevearc/aerial.nvim",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function() require("telescope").load_extension("aerial") end,
+  },
+
+  { -- change ui-select to telescope dropdown
+    "nvim-telescope/telescope-ui-select.nvim",
+    dependencies = "nvim-telescope/telescope.nvim",
+    config = function() require("telescope").load_extension("ui-select") end,
+  },
+
+  { -- code completion
     "hrsh7th/nvim-cmp",
     version = false,
     event = "InsertEnter",
