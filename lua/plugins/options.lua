@@ -257,6 +257,7 @@ function options.which_key()
   local telescope = require("telescope.builtin")
   local lazygit = require("toggleterm.terminal").Terminal:new({
     cmd = "lazygit",
+    direction = "tab",
     hidden = true,
   })
 

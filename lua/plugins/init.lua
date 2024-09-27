@@ -65,7 +65,10 @@ return {
       "nvim-tree/nvim-web-devicons",
       "nvim-telescope/telescope.nvim",
     },
-    config = function() require("telescope").load_extension("aerial") end,
+    config = function()
+      require("aerial").setup({})
+      require("telescope").load_extension("aerial")
+    end,
   },
 
   { -- change ui-select to telescope dropdown
