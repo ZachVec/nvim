@@ -142,6 +142,7 @@ function options.lspconfig()
 end
 
 function options.mason_lspconfig() return { ensure_installed = { "lua_ls", "pyright", "clangd" } } end
+
 function options.conform()
   return {
     formatters_by_ft = {
@@ -326,14 +327,14 @@ function options.which_key()
 
     -- Group: Git
     { "<leader>g", group = "Git operations" },
-    { "<leader>gd", "<cmd>Gitsigns diffthis<cr>", desc = "Diff current file" },
+    { "<leader>gd", "<cmd>Gitsigns diffthis<cr>", desc = "Diffthis" },
     { "<leader>gn", "<cmd>Gitsigns next_hunk<cr>", desc = "Next hunk" },
     { "<leader>gN", "<cmd>Gitsigns prev_hunk<cr>", desc = "Prev hunk" },
     { "<leader>gp", "<cmd>Gitsigns preview_hunk<cr>", desc = "Preview hunk" },
     { "<leader>gs", "<cmd>Gitsigns stage_hunk<cr>", desc = "Stage hunk" },
     { "<leader>gu", "<cmd>Gitsigns undo_stage_hunk<cr>", desc = "Unstage hunk" },
     { "<leader>gr", "<cmd>Gitsigns reset_hunk<cr>", desc = "Reset hunk" },
-    { "<leader>gt", function() lazygit:toggle() end, desc = "Run Lazygit" },
+    { "<leader>gt", function() lazygit:toggle() end, desc = "Lazygit" },
     { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "Diffview" },
   }
   if cond.not_loaded("tmux") then
