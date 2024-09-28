@@ -17,6 +17,7 @@ return {
   { "nvim-lualine/lualine.nvim", opts = opts.lualine, dependencies = { "nvim-tree/nvim-web-devicons" } },
   { "folke/which-key.nvim", opts = opts.which_key },
   { "akinsho/toggleterm.nvim", opts = opts.toggleterm },
+  { "sindrets/diffview.nvim", opts = opts.diffview, dependencies = { "nvim-tree/nvim-web-devicons" } },
 
   { -- formatter
     "stevearc/conform.nvim",

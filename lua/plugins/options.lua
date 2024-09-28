@@ -340,6 +340,7 @@ function options.which_key()
     { "<leader>gu", "<cmd>Gitsigns undo_stage_hunk<cr>", desc = "Unstage hunk" },
     { "<leader>gr", "<cmd>Gitsigns reset_hunk<cr>", desc = "Reset hunk" },
     { "<leader>gt", function() lazygit:toggle() end, desc = "Run Lazygit" },
+    { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "Diffview" },
   }
   if cond.not_loaded("tmux") then
     table.insert(config.spec, { "<C-h>", "<C-w>h", desc = "Navigate to window on the left" })
