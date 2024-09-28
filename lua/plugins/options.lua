@@ -136,7 +136,7 @@ function options.mason_lspconfig()
       },
     },
     pyright = {},
-    -- clangd = {},
+    clangd = {},
   }
   local handlers = {}
   for client, opts in pairs(setup_opts) do
