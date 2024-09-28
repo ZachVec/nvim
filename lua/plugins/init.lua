@@ -26,6 +26,15 @@ return {
   },
 
   { -- lsp
+    "neovim/nvim-lspconfig",
+    config = function()
+      for lsp, lspopts in pairs(opts.lspconfig()) do
+        require("lspconfig")[lsp].setup(lspopts)
+      end
+    end,
+  },
+
+  { -- lsp installer
     "williamboman/mason-lspconfig.nvim",
     dependencies = {
       "williamboman/mason.nvim",

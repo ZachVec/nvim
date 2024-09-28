@@ -1,6 +1,6 @@
 local cond = require("utils.conditions")
 
---- @type table<string, function>
+--- @type table<string, fun(): table<string, any>>
 local options = setmetatable({}, {
   __index = function(_, _)
     return function() return {} end
@@ -117,8 +117,8 @@ function options.nvim_treesitter()
   }
 end
 
-function options.mason_lspconfig()
-  local setup_opts = {
+function options.lspconfig()
+  return {
     lua_ls = {
       settings = {
         Lua = {
@@ -136,18 +136,12 @@ function options.mason_lspconfig()
       },
     },
     pyright = {},
-    clangd = {},
-  }
-  local handlers = {}
-  for client, opts in pairs(setup_opts) do
-    handlers[client] = function() require("lspconfig")[client].setup(opts) end
-  end
-  return {
-    ensure_installed = { "lua_ls", "pyright", "clangd" },
-    handlers = handlers,
+    clangd = { filetypes = { "c", "cpp", "objc", "objcpp", "cuda" } },
+    protols = {},
   }
 end
 
+function options.mason_lspconfig() return { ensure_installed = { "lua_ls", "pyright", "clangd" } } end
 function options.conform()
   return {
     formatters_by_ft = {
