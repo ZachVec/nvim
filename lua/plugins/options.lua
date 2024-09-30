@@ -136,7 +136,13 @@ function options.lspconfig()
       },
     },
     pyright = {},
-    clangd = { filetypes = { "c", "cpp", "objc", "objcpp", "cuda" } },
+    clangd = {
+      cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" },
+      filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+      init_options = {
+        fallbackFlags = { "-std=c++17" },
+      },
+    },
     protols = {},
   }
 end
