@@ -194,7 +194,7 @@ end
 function options.telescope()
   local actions = require("telescope.actions")
   return {
-    defaults = {
+    defaults = vim.tbl_extend("force", require("telescope.themes").get_ivy(), {
       mappings = {
         i = {
           ["<C-j>"] = actions.cycle_history_next,
@@ -205,13 +205,10 @@ function options.telescope()
           ["<C-k>"] = actions.cycle_history_prev,
         },
       },
-    },
+    }),
     pickers = {
       find_files = {
-        theme = "dropdown",
-        previewer = false,
         find_command = { "fd" },
-        layout_config = { width = 0.6 },
       },
       buffers = {
         mappings = {
@@ -219,7 +216,6 @@ function options.telescope()
             ["dd"] = actions.delete_buffer,
           },
         },
-        layout_config = { width = 0.6 },
       },
     },
     extensions = {
