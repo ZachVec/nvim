@@ -289,7 +289,7 @@ function options.which_key()
     { "<F12>", "<CMD>ToggleTerm<CR>", desc = "Toggle Terminal" },
 
     { "<C-n>", "<cmd>NvimTreeFindFileToggle<cr>", desc = "NvimTreeToggle" },
-    { "<C-m>", "<cmd>AerialToggle! right<cr>", desc = "AerialToggle" },
+    { "<C-S-n>", "<cmd>AerialToggle! right<cr>", desc = "AerialToggle" },
 
     -- Group: List
     { ";", group = "List someting?" },
