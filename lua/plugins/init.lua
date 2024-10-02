@@ -18,6 +18,11 @@ return {
   { "folke/which-key.nvim", opts = opts.which_key },
   { "akinsho/toggleterm.nvim", opts = opts.toggleterm },
   { "sindrets/diffview.nvim", opts = opts.diffview, dependencies = { "nvim-tree/nvim-web-devicons" } },
+  {
+    "tzachar/local-highlight.nvim",
+    init = function() vim.o.updatetime = 500 end,
+    opts = opts.local_highlight,
+  },
 
   { -- formatter
     "stevearc/conform.nvim",
