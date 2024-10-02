@@ -33,8 +33,25 @@ return {
   { -- lsp
     "neovim/nvim-lspconfig",
     config = function()
+      local lspcfg = require("lspconfig")
       for lsp, lspopts in pairs(opts.lspconfig()) do
-        require("lspconfig")[lsp].setup(lspopts)
+        lspcfg[lsp].setup(vim.tbl_extend("force", lspopts, {
+          --- Function called when LSP attaches to a buffer
+          --- @param client table The LSP client
+          --- @param bufnr number The buffer number
+          on_attach = function(client, bufnr)
+            if client.supports_method("textDocument/inlayHint", { bufnr = bufnr }) then
+              vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+            end
+            -- if client.supports_method("textDocument/codeLens", { bufnr = bufnr }) then
+            --   vim.lsp.codelens.refresh({ bufnr = bufnr })
+            --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+            --     buffer = bufnr,
+            --     callback = function(_) vim.lsp.codelens.refresh({ bufnr = bufnr }) end,
+            --   })
+            -- end
+          end,
+        }))
       end
     end,
   },

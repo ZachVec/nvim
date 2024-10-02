@@ -122,9 +122,22 @@ function options.lspconfig()
     lua_ls = {
       settings = {
         Lua = {
-          runtime = {
-            version = "LuaJIT",
-            path = vim.split(package.path, ";"),
+          codeLens = {
+            enable = true,
+          },
+          completion = {
+            callSnippet = "Replace",
+          },
+          doc = {
+            privateName = { "^_" },
+          },
+          hint = {
+            enable = true,
+            setType = true,
+            paramType = true,
+            paramName = "Disable",
+            semicolon = "Disable",
+            arrayIndex = "Disable",
           },
           diagnositics = {
             globals = { "vim" },
