@@ -64,13 +64,6 @@ function TabEntry.list(opts)
       local bufnr = vim.api.nvim_win_get_buf(winid)
       local filepath = vim.api.nvim_buf_get_name(bufnr)
       local filename = vim.fn.fnamemodify(filepath, ":t")
-      print(vim.inspect(
-          {
-              vim.api.nvim_get_option_value("buftype", {buf=bufnr}),
-              vim.api.nvim_get_option_value("filetype", {buf=bufnr}),
-              bufnr = bufnr
-          }
-      ))
       tab:add_file(filename)
     end
     table.insert(tab_entries, tab)

@@ -1,115 +1,87 @@
-local opts = require("plugins.options")
 local cond = require("utils.conditions")
 
+local function setup(name)
+  local prefix = "plugins.configs."
+  return function() require(prefix .. name):setup() end
+end
+
 return {
-  { "ellisonleao/gruvbox.nvim", opts = opts.gruvbox, lazy = false, priority = 1000 },
-  { "folke/tokyonight.nvim", opts = opts.tokyonight, lazy = false, priority = 1000 },
-  { "j-hui/fidget.nvim", opts = opts.fidget },
-  { "lukas-reineke/indent-blankline.nvim", opts = opts.ibl, main = "ibl" },
-  { "nvim-treesitter/nvim-treesitter", opts = opts.nvim_treesitter, build = ":TSUpdate" },
-  { "chentoast/marks.nvim", opts = opts.marks, event = "VeryLazy" },
-  { "smoka7/hop.nvim", opts = opts.hop, version = "*" },
-  { "lewis6991/gitsigns.nvim", opts = opts.gitsigns },
-  { "echasnovski/mini.pairs", opts = opts.minipairs, version = "*" },
-  { "aserowy/tmux.nvim", opts = opts.tmux, lazy = cond.not_in_tmux() },
-  { "numToStr/Comment.nvim", opts = opts.Comment },
-  { "williamboman/mason.nvim", opts = opts.mason },
-  { "nvim-lualine/lualine.nvim", opts = opts.lualine, dependencies = { "nvim-tree/nvim-web-devicons" } },
-  { "folke/which-key.nvim", opts = opts.which_key },
-  { "akinsho/toggleterm.nvim", opts = opts.toggleterm },
-  { "sindrets/diffview.nvim", opts = opts.diffview, dependencies = { "nvim-tree/nvim-web-devicons" } },
+  { "ellisonleao/gruvbox.nvim", opts = {}, lazy = false, priority = 1000 },
+  { "folke/tokyonight.nvim", opts = {}, lazy = false, priority = 1000 },
+  { "j-hui/fidget.nvim", opts = {} },
+  { "williamboman/mason.nvim", opts = {} },
+  { "echasnovski/mini.pairs", opts = {}, version = "*" },
+  { "chentoast/marks.nvim", opts = {}, event = "VeryLazy" },
+  { "tzachar/local-highlight.nvim", opts = {}, init = function() vim.o.updatetime = 500 end },
+  { "aserowy/tmux.nvim", opts = {}, cond = cond.in_tmux() },
+  { "nvimdev/dashboard-nvim", opts = {}, dependencies = "nvim-tree/nvim-web-devicons" },
+
+  { "folke/which-key.nvim", config = setup("which-key") },
+  { "smoka7/hop.nvim", config = setup("hop"), version = "*", event = "VeryLazy" },
+  { "akinsho/toggleterm.nvim", config = setup("toggleterm") },
+  { "lewis6991/gitsigns.nvim", config = setup("gitsigns") },
+  { "neovim/nvim-lspconfig", config = setup("lspconfig") },
+
   {
-    "tzachar/local-highlight.nvim",
-    init = function() vim.o.updatetime = 500 end,
-    opts = opts.local_highlight,
+    "lukas-reineke/indent-blankline.nvim",
+    config = setup("ibl"),
+    event = "VeryLazy",
   },
 
-  { -- formatter
+  {
+    "nvim-treesitter/nvim-treesitter",
+    config = setup("nvim-treesitter"),
+    build = ":TSUpdate",
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    config = setup("lualine"),
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
+    "sindrets/diffview.nvim",
+    config = setup("gitsigns"),
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
     "stevearc/conform.nvim",
     init = function() vim.g.disable_autoformat = true end,
-    opts = opts.conform,
+    config = setup("conform"),
+  },
+  {
+    "folke/persistence.nvim",
+    config = setup("persistence"),
+    event = "BufReadPre",
   },
 
-  { -- lsp
-    "neovim/nvim-lspconfig",
-    config = function()
-      local lspcfg = require("lspconfig")
-      for lsp, lspopts in pairs(opts.lspconfig()) do
-        lspcfg[lsp].setup(vim.tbl_extend("force", lspopts, {
-          --- Function called when LSP attaches to a buffer
-          --- @param client table The LSP client
-          --- @param bufnr number The buffer number
-          on_attach = function(client, bufnr)
-            if client.supports_method("textDocument/inlayHint", { bufnr = bufnr }) then
-              vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-            end
-            -- if client.supports_method("textDocument/codeLens", { bufnr = bufnr }) then
-            --   vim.lsp.codelens.refresh({ bufnr = bufnr })
-            --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-            --     buffer = bufnr,
-            --     callback = function(_) vim.lsp.codelens.refresh({ bufnr = bufnr }) end,
-            --   })
-            -- end
-          end,
-        }))
-      end
-    end,
+  {
+    "stevearc/aerial.nvim",
+    config = setup("aerial"),
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   },
 
-  { -- lsp installer
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "neovim/nvim-lspconfig",
-    },
-    opts = opts.mason_lspconfig,
-  },
-
-  { -- file browser
+  {
     "nvim-tree/nvim-tree.lua",
-    dependencies = "nvim-tree/nvim-web-devicons",
     init = function()
       vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
       vim.opt.termguicolors = true
     end,
-    opts = opts.nvim_tree,
+    config = setup("nvim-tree"),
+    dependencies = "nvim-tree/nvim-web-devicons",
   },
-
-  { -- telescopes
+  {
     "nvim-telescope/telescope.nvim",
+    config = setup("telescope"),
     branch = "0.1.x",
-    dependencies = "nvim-lua/plenary.nvim",
-    opts = opts.telescope,
-  },
-
-  { -- sorter
-    "nvim-telescope/telescope-fzf-native.nvim",
-    build = "make",
-    dependencies = "nvim-telescope/telescope.nvim",
-    config = function() require("telescope").load_extension("fzf") end,
-  },
-
-  { -- find tags in current doc & provide current context in winbar
-    "stevearc/aerial.nvim",
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-      "nvim-telescope/telescope.nvim",
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      { "nvim-telescope/telescope-ui-select.nvim" },
     },
-    config = function()
-      require("aerial").setup({})
-      require("telescope").load_extension("aerial")
-    end,
   },
 
-  { -- change ui-select to telescope dropdown
-    "nvim-telescope/telescope-ui-select.nvim",
-    dependencies = "nvim-telescope/telescope.nvim",
-    config = function() require("telescope").load_extension("ui-select") end,
-  },
-
-  { -- code completion
+  {
     "hrsh7th/nvim-cmp",
     version = false,
     event = "InsertEnter",
@@ -120,33 +92,14 @@ return {
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
 
-      -- for luasnip code completion
+      -- for luasnip code completion engine
       "L3MON4D3/LuaSnip",
       "L3MON4D3/cmp_luasnip",
 
       -- frequently used code snippets
       "rafamadriz/friendly-snippets",
-      "onsails/lspkind-nvim",
+      "onsails/lspkind.nvim",
     },
-    config = function()
-      local cmp = require("cmp")
-      cmp.setup(opts.cmp())
-      require("luasnip.loaders.from_vscode").lazy_load()
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer" },
-        },
-      })
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = "path" },
-        }, {
-          { name = "cmdline" },
-        }),
-        matching = { disallow_symbol_nonprefix_matching = false },
-      })
-    end,
+    config = setup("nvim-cmp"),
   },
 }
